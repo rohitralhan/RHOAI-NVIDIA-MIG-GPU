@@ -35,6 +35,8 @@ The following figure illustrates how MIG technology partitions an A100 GPU into 
 <p align=center>Workloads on MIG Partitions<font size="2px"> (image credit: <a style="text-decoration:none" href="https://www.nvidia.com/en-gb/technologies/multi-instance-gpu/">NVIDIA</a>)</font>
 </p>
 
+---
+
 ### Key Features
  - **Hardware-Level Partitioning** - enables a single NVIDIA GPU to be split into **several separate GPU instances**, each with its own dedicated resources like memory and compute cores.
  - **Resource Customization** - **MIG slices** can be configured with varying amounts of **memory** and **compute power** based on workload requirements, ensuring optimal resource allocation.
@@ -221,5 +223,7 @@ MIG_CONFIGURATION=all-disabled && \
 
 ## References
  [MIG on Red Hat OpenShift Container Platform](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)
+ 
  [MIG User Guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/)
+ 
  [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html)
