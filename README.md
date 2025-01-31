@@ -111,6 +111,9 @@ nvidia.com/mig.strategy=single
  4. Verify that MIG manager configured the GPUs:
 	```
 	oc describe node | grep nvidia.com/mig.config
+	 ```
+	Sample Output
+	```
 	nvidia.com/mig.config=all-balanced
 	nvidia.com/mig.config.state=success
 	``` 
@@ -118,7 +121,9 @@ nvidia.com/mig.strategy=single
 	```
 	oc describe node | egrep "Name:|Roles:|Capacity|nvidia.com/gpu: \
 	|nvidia.com/mig-.* |Allocatable:|Requests +Limits"
-
+	```
+	Sample Output
+	```
 	Name: worker1.redhat.com
 	Roles:  worker
 	Capacity:
@@ -129,7 +134,7 @@ nvidia.com/mig.strategy=single
 		nvidia.com/gpu:  		0
 		nvidia.com/mig-1g.6gb: 		2
 		nvidia.com/mig-2g.12gb:  	1
-		Resource  				Requests  Limits
+		Resource  			Requests  	Limits
 		nvidia.com/mig-1g.6gb 		0 		0
 		nvidia.com/mig-2g.12gb  	0 		0
 	```
@@ -155,7 +160,7 @@ nvidia.com/mig.strategy=single
 	 2. List the pod
 		```
 		$ oc get pods
-		NAME                 READY   STATUS      RESTARTS   AGE
+		NAME             READY   STATUS      RESTARTS   AGE
 		nvidia-smi-pod   0/1     Completed   0          3m34s
 		```
 	 3. Confirm that the `nvidia-smi` output includes 3 MIG devices:
