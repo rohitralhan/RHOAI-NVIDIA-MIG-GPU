@@ -1,6 +1,5 @@
 
 
-
 # Optimizing GPU Utilization: Nvidia GPU Sharing with MIG on Red Hat OpenShift AI
 
 Maximizing GPU utilization is a game-changer in modern computing, especially for AI and ML, where GPUs take the spotlight for their unmatched ability to handle parallel tasks and crunch massive datasets at lightning speed. With thousands of cores firing in parallel, modern GPUs excel at complex model training and real-time data analysis—tasks that traditional CPUs simply can’t keep up with.
@@ -293,8 +292,8 @@ MIG_CONFIGURATION=all-disabled && \
 
 
 ## References
- [MIG on Red Hat OpenShift Container Platform](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html)
+ [MIG on Red Hat OpenShift Container Platform](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html?target=_blank)
  
- [MIG User Guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/)
+ [MIG User Guide](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/?target=_blank)
  
- [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html)
+ [NVIDIA GPU Operator](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html?target=_blank)
