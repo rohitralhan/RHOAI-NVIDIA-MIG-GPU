@@ -18,7 +18,7 @@ Each MIG instance has dedicated compute resources, memory pathways, and isolated
 
 Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
-![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)
+![https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)
 <p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
 </p>
 
@@ -31,7 +31,7 @@ The solution is as shown in the image below where the large model is give the ri
 
 The following figure illustrates how MIG technology partitions an A100 GPU into smaller, virtual GPUs. These "smaller GPUs" have reduced memory and fewer computing cores compared to the original GPU.
 
-![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)
+![https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-multiWorkLoad.png)](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-multiWorkLoad.png)
 <p align=center>Workloads on MIG Partitions<font size="2px"> (image credit: <a style="text-decoration:none" href="https://www.nvidia.com/en-gb/technologies/multi-instance-gpu/">NVIDIA</a>)</font>
 </p>
 
@@ -220,17 +220,17 @@ An accelerator profile is a Custom Resource Definition (CRD) that specifies the 
 
  1. Login to RHOAI dashboard
  
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/RHOAILoginOut.gif)
+![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/RHOAILoginOut.gif)
 
  2. Navigate to **`Settings → Accelerator Profiles`** click **`Create accelerated profiles`** button and follow the on-screen instructions to create two accelerator profiles **```mig-1g-6gb```** and **```mig-2g-12gb```**.
 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/CreateAccProfileOut.gif)
+![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/CreateAccProfileOut.gif)
 
 ---
 #### Deploy a model server and the model with the associated MIG Profile
-Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/models/rf_iris.onnx). 
+Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx). 
 
- 1. Download the [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/models/rf_iris.onnx) model.
+ 1. Download the [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx) model.
  2. Upload the model to a S3/S3 compatible bucket 
  3. Login to the Red Hat OpenShift AI console 
  4. Navigate to **```Data Science Projects --> Create Project```**, follow the onscreen instructions to create the project
@@ -256,11 +256,11 @@ Once the Accelerator Profiles are created, navigate to the data science project,
 	 v. Path:  **`iris`** or path to your model in the S3 buket
  10. Click **```Deploy```** to deploy the model
 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/DeployOut.gif)
+![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/DeployOut.gif)
 
 If you navigate to  **```Workloads --> Pods --> nvidia-driver-daemonset-***** pod --> Terminal```** in the **```nvidia-gpu-operator```** project ,  type **```nvidia-smi```** it will how a similar output shown in the image below. As you can see in our case the model server is using the MIG profile with GIID as 1 which is our 12 GB MIG instance as selected above while creating the model server.
 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/NvidiaMig-2g.png)
+![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/NvidiaMig-2g.png)
 
 ---
 #### Scale model server for Load Balancing
@@ -277,7 +277,7 @@ Follow the steps below to scale the model server:<BR>
 
 The animation below shows multiple mig-1g-6gb partitions being utilized across two worker nodes having an NVIDIA A30 GPU each and two mig-1g-6gb partitions on each GPU.
 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/ScaleDeployOut.gif)
+![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/ScaleDeployOut.gif)
 
 
 
