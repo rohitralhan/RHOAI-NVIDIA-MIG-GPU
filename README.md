@@ -208,7 +208,7 @@ nvidia.com/mig.strategy=single
 		 ```	
 ---
 ## Using MIG in Red Hat OpenShift AI
-MIG is now enabled, you can now go ahead and test it using Red Hat OpenShift AI (RHOAI) as explained below.
+MIG is now enabled, we can now go ahead and test it using Red Hat OpenShift AI (RHOAI) as explained below.
 For using MIG profiles in Red Hat OpenShift AI we will need to:
 
  - Configure Accelerator Profiles in RHOAI Dashboard
@@ -216,7 +216,7 @@ For using MIG profiles in Red Hat OpenShift AI we will need to:
  - Scale the model to provide Load Balancing for the model server
 
 #### Configure Accelerator Profiles in RHOAI Dashboard
-An accelerator profile is a Custom Resource Definition (CRD) that specifies the configuration for a particular accelerator. It can be managed directly through the OpenShift AI Dashboard under **Settings → Accelerator Profiles**. Here we will need to create all the needed profiles corresponding to our MIG configuration **```mig-1g-6gb```** and **```mig-2g-12gb```** in this case.
+An accelerator profile is a Custom Resource Definition (CRD) that specifies the configuration for a particular accelerator. It can be managed directly through the OpenShift AI Dashboard under **Settings → Accelerator Profiles**. Here we will create all the needed profiles corresponding to our MIG configuration **```mig-1g-6gb```** and **```mig-2g-12gb```** since the **```all-balanced```** MIG configuration for A30 GPUs created **```2 x 1g.6gb and 1 x 2g.12gb```**.
 
  1. Login to RHOAI dashboard
  
@@ -233,12 +233,12 @@ Once the Accelerator Profiles are created, navigate to the data science project,
  1. Download the [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx) model.
  2. Upload the model to a S3/S3 compatible bucket 
  3. Login to the Red Hat OpenShift AI console 
- 4. Navigate to **```Data Science Projects --> Create Project```**, follow the onscreen instructions to create the project
+ 4. Navigate to **```Data Science Projects → Create Project```**, follow the onscreen instructions to create the project
  5. Next create a data connection for saving the **```rf_iris.onnx```** models.
 	 1. Navigate to the **```Connections```** tab and click **```Add Connection```** button
 	 2. Follow the onscreen instructions for the **```S3 compatible object storage```** and click create   
  6. Now we will create a model server 
- 7. Navigate to the **```Models```** tab and click **```Add model server```** button. Follow the onscreen. Fill out the form with the following values:  
+ 7. Navigate to the **```Models```** tab and click **```Add model server```** button. Fill out the form with the following values:  
 	 i. Model server name: infer-model-server  
 	 ii. Serving runtime: **`OpenVINO Model Server`**  
 	 iii. Model server replicas: **`1`**
@@ -258,7 +258,7 @@ Once the Accelerator Profiles are created, navigate to the data science project,
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/DeployOut.gif)
 
-If you navigate to  **```Workloads --> Pods --> nvidia-driver-daemonset-***** pod --> Terminal```** in the **```nvidia-gpu-operator```** project ,  type **```nvidia-smi```** it will how a similar output shown in the image below. As you can see in our case the model server is using the MIG profile with GIID as 1 which is our 12 GB MIG instance as selected above while creating the model server.
+If you navigate to  **```Workloads → Pods → nvidia-driver-daemonset-***** pod → Terminal```** in the **```nvidia-gpu-operator```** project ,  type **```nvidia-smi```** it will show a similar output as shown in the image below. As you can see in our case the model server is using the MIG profile with GIID as 1 which is our 12 GB (```mig-2g-12gb```) MIG instance as selected above while creating the model server.
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/NvidiaMig-2g.png)
 
@@ -268,14 +268,14 @@ Scaling a model server in **OpenShift** for **load balancing**, using **Multi-In
 
 Follow the steps below to scale the model server:<BR>
 &nbsp;&nbsp;i. Login to Red Hat OpenShift AI<BR>
-&nbsp;&nbsp;ii. Navigate to the project **```sample-project --> Models tab```**<BR>
+&nbsp;&nbsp;ii. Navigate to the project **```sample-project → Models tab```**<BR>
 &nbsp;&nbsp;iii. Click the three dots next to **```Deploy Model```** button<BR>
 &nbsp;&nbsp;iv. Click **```Edit model server```**<BR>
 &nbsp;&nbsp;v. Increase the **```Number of model server replicas to deploy```** to 3<BR>
 &nbsp;&nbsp;vi. Change the **```Accelerator```** to **```NVIDIA mig-1g-6gb```**<BR>
 &nbsp;&nbsp;vii. Click the **```Update```** button to update/redeploy the model<BR>
 
-The animation below shows multiple mig-1g-6gb partitions being utilized across two worker nodes having an NVIDIA A30 GPU each and two mig-1g-6gb partitions on each GPU.
+The animation below shows multiple mig-1g-6gb partitions being utilized across two worker nodes having an NVIDIA A30 GPU each and two ```mig-1g-6gb``` partitions on each GPU.
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/ScaleDeployOut.gif)
 
@@ -288,7 +288,7 @@ The animation below shows multiple mig-1g-6gb partitions being utilized across t
 MIG_CONFIGURATION=all-disabled && \
   oc label node/$NODE_NAME nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
  ```
- The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
+ The MIG manager assigns a `mig.config.state` label to the GPU, then terminates GPU pods to enable/disable MIG mode and configure the GPU according to the specified settings.
 
 ## Conclusion
 NVIDIA Multi-Instance GPU (MIG) technology enables efficient GPU resource utilization by partitioning a single GPU into multiple independent instances. This ensures optimal performance for diverse workloads, from AI/ML training to inference and data analytics. By leveraging MIG on platforms like Red Hat OpenShift AI, organizations can maximize GPU efficiency, enhance multi-tenancy, and reduce infrastructure costs. Implementing MIG provides a scalable and flexible approach to GPU acceleration, making it a crucial tool for modern AI and high-performance computing environments.
