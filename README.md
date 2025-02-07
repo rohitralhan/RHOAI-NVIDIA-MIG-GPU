@@ -16,7 +16,7 @@ The **Multi-Instance GPU (MIG)** feature in NVIDIA GPUs allows secure partitioni
 
 Each MIG instance has dedicated compute resources, memory pathways, and isolated L2 cache and DRAM bandwidth, ensuring **consistent performance with predictable throughput and latency**. By partitioning streaming multiprocessors (SMs) and other GPU engines, MIG provides **fault isolation and guaranteed QoS** for virtual machines (VMs), containers, and processes—allowing multiple workloads to run in parallel on a single physical GPU. With partitioning at the hardware level, it delivers improved performance with lower overhead and enhanced security.
 
-Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
+Note - MIG is available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
 ![https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)
 <p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
