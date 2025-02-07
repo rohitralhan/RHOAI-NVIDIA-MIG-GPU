@@ -39,7 +39,7 @@ The following figure illustrates how MIG technology partitions an A100 GPU into 
  - **Hardware-Level Partitioning** - enables a single NVIDIA GPU to be split into **several separate GPU instances**, each with its own dedicated resources like memory, compute cores etc..
  - **Resource Customization** - **MIG slices** can be configured with varying amounts of **memory** and **compute power** based on workload requirements, ensuring optimal resource allocation.
  - **Security and Isolation** - hardware isolation guarantees **predictable performance** and **prevents data leakage** or potential security breaches between instances, offering a secure computing environment.
- - **Efficient Resource Utilization** - By enabling multiple workloads to share a single GPU, MIG maximizes GPU usage, improving **performance efficiency** and optimizing hardware costs
+ - **Efficient Resource Utilization** - By enabling multiple workloads to share a single GPU, MIG maximizes GPU usage, improving **performance efficiency** and optimizing hardware costs.
 
 
 ## Enable MIG on Red Hat OpenShift
