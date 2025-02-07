@@ -155,7 +155,7 @@ nvidia.com/mig.strategy=single
 	 2. List the pod
 		```
 		$ oc get pods
-		NAME                 READY   STATUS      RESTARTS   AGE
+		NAME             READY   STATUS      RESTARTS   AGE
 		nvidia-smi-pod   0/1     Completed   0          3m34s
 		```
 	 3. Confirm that the `nvidia-smi` output includes 3 MIG devices:
