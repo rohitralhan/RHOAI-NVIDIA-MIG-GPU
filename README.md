@@ -1,5 +1,3 @@
-
-
 # Optimizing GPU Utilization: Nvidia GPU Sharing with MIG on Red Hat OpenShift AI
 
 Maximizing GPU utilization is a game-changer in modern computing, especially for AI and ML, where GPUs take the spotlight for their unmatched ability to handle parallel tasks and crunch massive datasets at lightning speed. With thousands of cores firing in parallel, modern GPUs excel at complex model training and real-time data analysis—tasks that traditional CPUs simply can’t keep up with.
@@ -221,11 +219,15 @@ An accelerator profile is a Custom Resource Definition (CRD) that specifies the 
  1. Login to RHOAI dashboard
  
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/RHOAILoginOut.gif)
+<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/login">here</a> to see individual images
+</p>
+
 
  2. Navigate to **`Settings → Accelerator Profiles`** click **`Create accelerated profiles`** button and follow the on-screen instructions to create two accelerator profiles **```mig-1g-6gb```** and **```mig-2g-12gb```**.
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/CreateAccProfileOut.gif)
-
+<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/acc-profile">here</a> to see individual images
+</p>
 ---
 ### Deploy a model server and the model with the associated MIG Profile
 Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx). 
@@ -257,7 +259,8 @@ Once the Accelerator Profiles are created, navigate to the data science project,
  10. Click **```Deploy```** to deploy the model
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/DeployOut.gif)
-
+<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/deploy">here</a> to see individual images
+</p>
 If you navigate to  **```Workloads → Pods → nvidia-driver-daemonset-***** pod → Terminal```** in the **```nvidia-gpu-operator```** project ,  type **```nvidia-smi```** it will show a similar output as shown in the image below. As you can see in our case the model server is using the MIG profile with GIID as 1 which is our 12 GB (```mig-2g-12gb```) MIG instance as selected above while creating the model server.
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/NvidiaMig-2g.png)
@@ -278,7 +281,8 @@ Follow the steps below to scale the model server:<BR>
 The animation below shows multiple mig-1g-6gb partitions being utilized across two worker nodes having an NVIDIA A30 GPU each and two ```mig-1g-6gb``` partitions on each GPU.
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/ScaleDeployOut.gif)
-
+<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/deploy-scale">here</a> to see individual images
+</font></p>
 
 
 ## Disable the MIG on Red Hat OpenShift
