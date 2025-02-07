@@ -26,7 +26,7 @@ Note - MIG is available on GPUs based on the **NVIDIA Ampere architecture** and 
 
 Consider a scenario where a large application with high memory and compute demands runs alongside smaller programs on the same GPU, the small programs experience significant slowdowns. The larger program saturates the GPU, causing the small programs that were expected to finish in 5 hours to take 15 hours instead. This results in poor user experience, as the smaller task’s delay is more noticeable, even though both programs are affected. 
 
-The solution is as shown in the image below where the large model is give the right size/amount of MIG slices to complete their work without effecting the smaller programs which now have their own isolated GPU slice.
+The solution is as shown in the image below where a large model is give the right size/amount of MIG slices to complete their work without effecting the smaller programs which now have their own isolated GPU slice.
 
 
 The following figure illustrates how MIG technology partitions an A100 GPU into smaller, virtual GPUs. These "smaller GPUs" have reduced memory and fewer computing cores compared to the original GPU.
