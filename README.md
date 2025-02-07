@@ -227,7 +227,7 @@ An accelerator profile is a Custom Resource Definition (CRD) that specifies the 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/CreateAccProfileOut.gif)
 
 ---
-#### Deploy a model server and the model with the associated MIG Profile
+### Deploy a model server and the model with the associated MIG Profile
 Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx). 
 
  1. Download the [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx) model.
@@ -263,7 +263,7 @@ If you navigate to  **```Workloads → Pods → nvidia-driver-daemonset-***** po
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/NvidiaMig-2g.png)
 
 ---
-#### Scale model server for Load Balancing
+### Scale model server for Load Balancing
 Scaling a model server in **OpenShift** for **load balancing**, using **Multi-Instance GPU (MIG)** is a great way to optimize GPU resource utilization, especially on **NVIDIA  A or H series** or similar GPUs. Next we will look at how we can scale the model server in RHOAI:
 
 Follow the steps below to scale the model server:<BR>
