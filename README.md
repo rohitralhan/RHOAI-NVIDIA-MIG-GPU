@@ -243,23 +243,25 @@ Once the Accelerator Profiles are created, navigate to the data science project,
 	 1. Navigate to the **```Connections```** tab and click **```Add Connection```** button
 	 2. Follow the onscreen instructions for the **```S3 compatible object storage```** and click create   
  6. Now we will create a model server 
- 7. Navigate to the **```Models```** tab and click **```Add model server```** button. Fill out the form with the following values:  
-	 i. Model server name: infer-model-server  
-	 ii. Serving runtime: **`OpenVINO Model Server`**  
-	 iii. Model server replicas: **`1`**
-	 iv. Model server size: **`Small`** (this can be adjusted according to the model needs)
-	 v. Accelerator: **`NVIDIA mig-2g-12gb`** (the reference to the MIG partition created)
-	 vi. Number of accelerators: **`1`**
-	 vii. **`Enable`** the Make deployed models available through an external route option  
-	 viii. **`Enable`** the Require token authentication option
- 8. Click **```Add```** to add a model server.
- 9. Once the model server is added click **```Deploy model```** on the right of the model server. Fill out the form with the following values:
+ 7. Navigate to the **```Models```** tab and click **```Add model server```** button. Fill out the form with the following values:
+
+	i. Model server name: infer-model-server<BR>
+	ii. Serving runtime: **`OpenVINO Model Server`**<BR>
+	iii. Model server replicas: **`1`**<BR>
+	iv. Model server size: **`Small`** (this can be adjusted according to the model needs)<BR>
+	v. Accelerator: **`NVIDIA mig-2g-12gb`** (the reference to the MIG partition created)<BR>
+	vi. Number of accelerators: **`1`**<BR>
+	vii. **`Enable`** the Make deployed models available through an external route option<BR>
+	viii. **`Enable`** the Require token authentication option<BR>
+ 
+ 9. Click **```Add```** to add a model server.
+ 10. Once the model server is added click **```Deploy model```** on the right of the model server. Fill out the form with the following values:
 	 i. Model name:  **```iris-model```**
 	 ii. Model framework:  **`onnx - 1`**
 	 iii. Select  Existing data connection
 	 iv. Select the  **`iris-data-connection`**  data connection
 	 v. Path:  **`iris`** or path to your model in the S3 buket
- 10. Click **```Deploy```** to deploy the model
+ 11. Click **```Deploy```** to deploy the model
 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/DeployOut.gif)
 <p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/deploy">here</a> to see individual images
