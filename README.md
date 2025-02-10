@@ -228,7 +228,10 @@ An accelerator profile is a Custom Resource Definition (CRD) that specifies the 
 ![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/CreateAccProfileOut.gif)
 <p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/acc-profile">here</a> to see individual images
 </p>
+
 ---
+
+
 ### Deploy a model server and the model with the associated MIG Profile
 Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx).
 
