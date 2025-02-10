@@ -127,7 +127,7 @@ nvidia.com/mig.strategy=single
 		nvidia.com/gpu:  		0
 		nvidia.com/mig-1g.6gb: 		2
 		nvidia.com/mig-2g.12gb:  	1
-		Resource  				Requests  Limits
+		Resource  			Requests  	Limits
 		nvidia.com/mig-1g.6gb 		0 		0
 		nvidia.com/mig-2g.12gb  	0 		0
 	```
