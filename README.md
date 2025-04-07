@@ -1,3 +1,6 @@
+
+
+
 # Optimizing GPU Utilization: Nvidia GPU Sharing with MIG on Red Hat OpenShift AI
 
 Maximizing GPU utilization is a game-changer in modern computing, especially for AI and ML, where GPUs take the spotlight for their unmatched ability to handle parallel tasks and crunch massive datasets at lightning speed. With thousands of cores firing in parallel, modern GPUs excel at complex model training and real-time data analysis—tasks that traditional CPUs simply can’t keep up with.
@@ -14,9 +17,9 @@ The **Multi-Instance GPU (MIG)** feature in NVIDIA GPUs allows secure partitioni
 
 Each MIG instance has dedicated compute resources, memory pathways, and isolated L2 cache and DRAM bandwidth, ensuring **consistent performance with predictable throughput and latency**. By partitioning streaming multiprocessors (SMs) and other GPU engines, MIG provides **fault isolation and guaranteed QoS** for virtual machines (VMs), containers, and processes—allowing multiple workloads to run in parallel on a single physical GPU. With partitioning at the hardware level, it delivers improved performance with lower overhead and enhanced security.
 
-Note - MIG is available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
+Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
-![https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-overview.jpg)
+![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)
 <p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
 </p>
 
@@ -24,31 +27,31 @@ Note - MIG is available on GPUs based on the **NVIDIA Ampere architecture** and 
 
 Consider a scenario where a large application with high memory and compute demands runs alongside smaller programs on the same GPU, the small programs experience significant slowdowns. The larger program saturates the GPU, causing the small programs that were expected to finish in 5 hours to take 15 hours instead. This results in poor user experience, as the smaller task’s delay is more noticeable, even though both programs are affected. 
 
-The solution is as shown in the image below where a large model is give the right size/amount of MIG slices to complete their work without effecting the smaller programs which now have their own isolated GPU slice.
+The solution is as shown in the image below where the large model is give the right size/amount of MIG slices to complete their work without effecting the smaller programs which now have their own isolated GPU slice.
 
 
 The following figure illustrates how MIG technology partitions an A100 GPU into smaller, virtual GPUs. These "smaller GPUs" have reduced memory and fewer computing cores compared to the original GPU.
 
-![https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-multiWorkLoad.png)](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/mig-multiWorkLoad.png)
+![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)
 <p align=center>Workloads on MIG Partitions<font size="2px"> (image credit: <a style="text-decoration:none" href="https://www.nvidia.com/en-gb/technologies/multi-instance-gpu/">NVIDIA</a>)</font>
 </p>
 
 ---
 
 ### Key Features
- - **Hardware-Level Partitioning** - enables a single NVIDIA GPU to be split into **several separate GPU instances**, each with its own dedicated resources like memory, compute cores etc..
+ - **Hardware-Level Partitioning** - enables a single NVIDIA GPU to be split into **several separate GPU instances**, each with its own dedicated resources like memory and compute cores.
  - **Resource Customization** - **MIG slices** can be configured with varying amounts of **memory** and **compute power** based on workload requirements, ensuring optimal resource allocation.
  - **Security and Isolation** - hardware isolation guarantees **predictable performance** and **prevents data leakage** or potential security breaches between instances, offering a secure computing environment.
- - **Efficient Resource Utilization** - By enabling multiple workloads to share a single GPU, MIG maximizes GPU usage, improving **performance efficiency** and optimizing hardware costs.
+ - **Efficient Resource Utilization** - By enabling multiple workloads to share a single GPU, MIG maximizes GPU usage, improving **performance efficiency** and optimizing hardware costs
 
 
 ## Enable MIG on Red Hat OpenShift
 
 ### Prerequisite
- - Access to Red Hat OpenShift Cluster with GPUs available
- - NVIDIA GPU Operator is Installed and Configured (GPU Cluster Policy)
+ - Access to Red Hat OpenShift Cluster with MIG supported GPUs available
+ - NVIDIA GPU Operator is Installed and Configured (GPU Cluster Policy etc.)
  - Cluster administrator access to your OpenShift cluster
- - oc CLI tool for accessing the cluster from the command line
+ - Access to oc CLI tool for accessing the cluster from the command line
 
 ### MIG geometry
 ---
@@ -67,7 +70,7 @@ The NVIDIA A100 40GB, offers the following options:
 
 ### MIG advertisement strategies
 ---
-There are two MIG strategies: the **`Single`** MIG strategy, used when all GPUs on a node have MIG enabled, and the **`Mixed`** MIG strategy, used when only some GPUs on a node have MIG enabled.
+There are two MIG strategies: the **`Single`**, where all GPUs on the node are configured to use **the same MIG profile** (i.e., same number and size of MIG instances), and the **`Mixed`** MIG strategy, GPU can be partitioned into multiple instances with varying sizes, allowing different workloads to run concurrently on the same GPU. Set `mig strategy` to `mixed` when MIG mode is not enabled on all GPUs on a node.
 
 ### MIG Setup on Red Hat OpenShift
 ---
@@ -90,7 +93,7 @@ nvidia.com/mig.strategy=single
 
  1. Set the following environment variables for the NODE_NAME (for each node), STRATEGY and MIG_CONFIGURATION 
 	```
-	NODE_NAME1=worker1.redhat.com
+	NODE_NAME1=worker1.host.com
 	STRATEGY=mixed
 	MIG_CONFIGURATION=all-balanced
 	```
@@ -116,8 +119,9 @@ nvidia.com/mig.strategy=single
 	```
 	oc describe node | egrep "Name:|Roles:|Capacity|nvidia.com/gpu: \
 	|nvidia.com/mig-.* |Allocatable:|Requests +Limits"
-
-	Name: worker1.redhat.com
+	```
+	```
+	Name: worker1.host.com
 	Roles:  worker
 	Capacity:
 		nvidia.com/gpu:  		1
@@ -127,7 +131,7 @@ nvidia.com/mig.strategy=single
 		nvidia.com/gpu:  		0
 		nvidia.com/mig-1g.6gb: 		2
 		nvidia.com/mig-2g.12gb:  	1
-		Resource  			Requests  	Limits
+		Resource  				Requests  Limits
 		nvidia.com/mig-1g.6gb 		0 		0
 		nvidia.com/mig-2g.12gb  	0 		0
 	```
@@ -153,7 +157,7 @@ nvidia.com/mig.strategy=single
 	 2. List the pod
 		```
 		$ oc get pods
-		NAME             READY   STATUS      RESTARTS   AGE
+		NAME                 READY   STATUS      RESTARTS   AGE
 		nvidia-smi-pod   0/1     Completed   0          3m34s
 		```
 	 3. Confirm that the `nvidia-smi` output includes 3 MIG devices:
@@ -205,91 +209,124 @@ nvidia.com/mig.strategy=single
 		pod "command-nvidia-smi" deleted
 		 ```	
 ---
-## Using MIG in Red Hat OpenShift AI
-MIG is now enabled, we can now go ahead and test it using Red Hat OpenShift AI (RHOAI) as explained below.
-For using MIG profiles in Red Hat OpenShift AI we will need to:
 
- - Configure Accelerator Profiles in RHOAI Dashboard
- - Deploy a model server and the model with the associated MIG Profile
- - Scale the model to provide Load Balancing for the model server
+## Configure Custom MIG Profiles
+By default, the NVIDIA GPU Operator in OpenShift creates a `default-mig-parted-config` ConfigMap. The MIG Manager uses this ConfigMap to apply a consistent MIG configuration to all MIG-capable GPUs in the cluster. Unless overridden, all such GPUs will follow the profiles defined in this default config—ensuring a standardized partitioning strategy across nodes.
 
-#### Configure Accelerator Profiles in RHOAI Dashboard
-An accelerator profile is a Custom Resource Definition (CRD) that specifies the configuration for a particular accelerator. It can be managed directly through the OpenShift AI Dashboard under **Settings → Accelerator Profiles**. Here we will create all the needed profiles corresponding to our MIG configuration **```mig-1g-6gb```** and **```mig-2g-12gb```** since the **```all-balanced```** MIG configuration for A30 GPUs created **```2 x 1g.6gb and 1 x 2g.12gb```**.
+This behavior enables consistent and declarative management of GPU partitioning across nodes and simplifies the automated deployment of standard MIG configurations in OpenShift environments.
 
- 1. Login to RHOAI dashboard
- 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/RHOAILoginOut.gif)
-<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/login">here</a> to see individual images
-</p>
+Assume each worker node in an OpenShift cluster has 4 A100 GPUs. Depending on your use case, you want to enable MIG on only 2 of the GPUs, leaving the remaining GPUs unpartitioned. To achieve this, you can define a custom MIG profile that specifies which GPUs should be configured with MIG and which should remain in full GPU mode.
 
+Follow the steps below to achieve this:
 
- 2. Navigate to **`Settings → Accelerator Profiles`** click **`Create accelerated profiles`** button and follow the on-screen instructions to create two accelerator profiles **```mig-1g-6gb```** and **```mig-2g-12gb```**.
+ 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml`. Use the [configmap](https://gitlab.com/nvidia/kubernetes/gpu-operator/-/blob/v1.8.0/assets/state-mig-manager/0400_configmap.yaml) as guidance to help you build that custom configuration. For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted).
 
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/CreateAccProfileOut.gif)
-<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/acc-profile">here</a> to see individual images
-</p>
+	For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
 
----
-
-
-### Deploy a model server and the model with the associated MIG Profile
-Once the Accelerator Profiles are created, navigate to the data science project, create a model server, and deploy the model. For this demonstration, we are using an iris model available [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx).
-
- 1. Download the [rf_iris.onnx](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/models/rf_iris.onnx) model.
- 2. Upload the model to a S3/S3 compatible bucket 
- 3. Login to the Red Hat OpenShift AI console 
- 4. Navigate to **```Data Science Projects → Create Project```**, follow the onscreen instructions to create the project
- 5. Next create a data connection for saving the **```rf_iris.onnx```** models.
-	 1. Navigate to the **```Connections```** tab and click **```Add Connection```** button
-	 2. Follow the onscreen instructions for the **```S3 compatible object storage```** and click create   
- 6. Now we will create a model server 
- 7. Navigate to the **```Models```** tab and click **```Add model server```** button. Fill out the form with the following values:
-
-	i. Model server name: infer-model-server<BR>
-	ii. Serving runtime: **`OpenVINO Model Server`**<BR>
-	iii. Model server replicas: **`1`**<BR>
-	iv. Model server size: **`Small`** (this can be adjusted according to the model needs)<BR>
-	v. Accelerator: **`NVIDIA mig-2g-12gb`** (the reference to the MIG partition created)<BR>
-	vi. Number of accelerators: **`1`**<BR>
-	vii. **`Enable`** the Make deployed models available through an external route option<BR>
-	viii. **`Enable`** the Require token authentication option<BR>
- 
- 9. Click **```Add```** to add a model server.
- 10. Once the model server is added click **```Deploy model```** on the right of the model server. Fill out the form with the following values:
-	 i. Model name:  **```iris-model```**
-	 ii. Model framework:  **`onnx - 1`**
-	 iii. Select  Existing data connection
-	 iv. Select the  **`iris-data-connection`**  data connection
-	 v. Path:  **`iris`** or path to your model in the S3 buket
- 11. Click **```Deploy```** to deploy the model
-
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/DeployOut.gif)
-<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/deploy">here</a> to see individual images
-</p>
-If you navigate to  **```Workloads → Pods → nvidia-driver-daemonset-***** pod → Terminal```** in the **```nvidia-gpu-operator```** project ,  type **```nvidia-smi```** it will show a similar output as shown in the image below. As you can see in our case the model server is using the MIG profile with GIID as 1 which is our 12 GB (```mig-2g-12gb```) MIG instance as selected above while creating the model server.
-
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/NvidiaMig-2g.png)
-
----
-### Scale model server for Load Balancing
-Scaling a model server in **OpenShift** for **load balancing**, using **Multi-Instance GPU (MIG)** is a great way to optimize GPU resource utilization, especially on **NVIDIA  A or H series** or similar GPUs. Next we will look at how we can scale the model server in RHOAI:
-
-Follow the steps below to scale the model server:<BR>
-&nbsp;&nbsp;i. Login to Red Hat OpenShift AI<BR>
-&nbsp;&nbsp;ii. Navigate to the project **```sample-project → Models tab```**<BR>
-&nbsp;&nbsp;iii. Click the three dots next to **```Deploy Model```** button<BR>
-&nbsp;&nbsp;iv. Click **```Edit model server```**<BR>
-&nbsp;&nbsp;v. Increase the **```Number of model server replicas to deploy```** to 3<BR>
-&nbsp;&nbsp;vi. Change the **```Accelerator```** to **```NVIDIA mig-1g-6gb```**<BR>
-&nbsp;&nbsp;vii. Click the **```Update```** button to update/redeploy the model<BR>
-
-The animation below shows multiple mig-1g-6gb partitions being utilized across two worker nodes having an NVIDIA A30 GPU each and two ```mig-1g-6gb``` partitions on each GPU.
-
-![enter image description here](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/images/ScaleDeployOut.gif)
-<p align=center>Click <a style="text-decoration:none" target="_blank" rel="noopener" href="https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/tree/main/images/mig-config-images/deploy-scale">here</a> to see individual images
-</font></p>
+ 2. Create the custom configuration within the  `nvidia-gpu-operator`  namespace:
+	  ```
+	  $ CONFIG_FILE=/path/to/custom_configmap.yaml && \   
+	  oc create configmap custom-mig-parted-config \   
+	  --from-file=config.yaml=$CONFIG_FILE \   
+	  -n nvidia-gpu-operator
+    ```
+3.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`:
+	```
+	oc patch clusterpolicies.nvidia.com/cluster-policy \
+	--type='json' \
+	-p='[{"op":"replace", "path":"/spec/mig/strategy", "value":"mixed"}]'
+	```
+4.	Patch the cluster policy so MIG Manager uses the custom config map:
+	```
+	oc patch clusterpolicies.nvidia.com/cluster-policy \
+	--type='json' \
+	-p='[{"op":"replace", "path":"/spec/migManager/config/name", "value":"custom-mig-config"}]'
+	```
+5.	Label the nodes with the profile to configure:
+	```
+	kubectl label nodes <node-name> nvidia.com/mig.config=custom-config --overwrite
+	```
+6.	Optional: Monitor the MIG Manager logs to confirm the new MIG geometry is applied:
+	```
+	oc logs -n nvidia-gpu-operator -l app=nvidia-mig-manager -c nvidia-mig-manager
+	```
 
 
+	```
+	Applying the selected MIG config to the node
+	time="2024-05-15T13:40:08Z" level=debug msg="Parsing config file..."
+	time="2024-05-15T13:40:08Z" level=debug msg="Selecting specific MIG config..."
+	time="2024-05-15T13:40:08Z" level=debug msg="Running apply-start hook"
+	time="2024-05-15T13:40:08Z" level=debug msg="Checking current MIG mode..."
+	.
+	.
+	.
+	.
+	time="2024-05-15T13:40:09Z" level=debug msg="Running apply-exit hook"
+	MIG configuration applied successfully
+	```
+
+Here’s an example snippet from a `custom-config.yaml` file. In this setup, the node has 8 A100 GPUs. As you can see under the `custom-config` section, GPUs 0–3 are left unpartitioned, while GPUs 4–7 are configured with MIG and assigned various instance profiles. This allows you to run mixed workloads efficiently on the same node—maximizing GPU utilization without overcommitting resources.
+```
+version: v1
+mig-configs:
+  all-disabled:
+    - devices: all
+      mig-enabled: false
+
+  all-enabled:
+    - devices: all
+      mig-enabled: true
+      mig-devices: {}
+
+  all-1g.5gb:
+    - devices: all
+      mig-enabled: true
+      mig-devices:
+        "1g.5gb": 7
+
+  all-2g.10gb:
+    - devices: all
+      mig-enabled: true
+      mig-devices:
+        "2g.10gb": 3
+
+  all-3g.20gb:
+    - devices: all
+      mig-enabled: true
+      mig-devices:
+        "3g.20gb": 2
+
+  all-balanced:
+    - devices: all
+      mig-enabled: true
+      mig-devices:
+        "1g.5gb": 2
+        "2g.10gb": 1
+        "3g.20gb": 1
+
+  custom-config:
+    - devices: [0,1,2,3]
+      mig-enabled: false
+    - devices: [4]
+      mig-enabled: true
+      mig-devices:
+        "1g.5gb": 7
+    - devices: [5]
+      mig-enabled: true
+      mig-devices:
+        "2g.10gb": 3
+    - devices: [6]
+      mig-enabled: true
+      mig-devices:
+        "3g.20gb": 2
+    - devices: [7]
+      mig-enabled: true
+      mig-devices:
+        "1g.5gb": 2
+        "2g.10gb": 1
+        "3g.20gb": 1
+```
 ## Disable the MIG on Red Hat OpenShift
 
  To utilize the full capacity of the GPU you can always disable/turn off MIG by executing the following command
@@ -297,7 +334,7 @@ The animation below shows multiple mig-1g-6gb partitions being utilized across t
 MIG_CONFIGURATION=all-disabled && \
   oc label node/$NODE_NAME nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
  ```
- The MIG manager assigns a `mig.config.state` label to the GPU, then terminates GPU pods to enable/disable MIG mode and configure the GPU according to the specified settings.
+ The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
 
 ## Conclusion
 NVIDIA Multi-Instance GPU (MIG) technology enables efficient GPU resource utilization by partitioning a single GPU into multiple independent instances. This ensures optimal performance for diverse workloads, from AI/ML training to inference and data analytics. By leveraging MIG on platforms like Red Hat OpenShift AI, organizations can maximize GPU efficiency, enhance multi-tenancy, and reduce infrastructure costs. Implementing MIG provides a scalable and flexible approach to GPU acceleration, making it a crucial tool for modern AI and high-performance computing environments.
