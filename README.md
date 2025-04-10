@@ -1,8 +1,7 @@
 
 
 
-# Optimizing GPU Utilization: Nvidia GPU Sharing with MIG on Red Hat OpenShift AI
-
+# Optimizing GPU Utilization: GPU Sharing with MIG on RHOAI
 Maximizing GPU utilization is a game-changer in modern computing, especially for AI and ML, where GPUs take the spotlight for their unmatched ability to handle parallel tasks and crunch massive datasets at lightning speed. With thousands of cores firing in parallel, modern GPUs excel at complex model training and real-time data analysis—tasks that traditional CPUs simply can’t keep up with.
 
 By unlocking the full power of GPUs, organizations can supercharge MLOps workflows, accelerate time-to-insight, and boost infrastructure efficiency. The result? Reduced hardware costs, lower operational overheads, and a future-proof system that's agile enough to scale with ever-evolving demands. One powerful approach to optimizing GPU resources is sharing them across multiple workloads.
@@ -19,7 +18,7 @@ Each MIG instance has dedicated compute resources, memory pathways, and isolated
 
 Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
-![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)
+![MIG Architecture (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)
 <p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
 </p>
 
@@ -32,7 +31,7 @@ The solution is as shown in the image below where the large model is give the ri
 
 The following figure illustrates how MIG technology partitions an A100 GPU into smaller, virtual GPUs. These "smaller GPUs" have reduced memory and fewer computing cores compared to the original GPU.
 
-![https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)
+![Workloads on MIG Partitions (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)
 <p align=center>Workloads on MIG Partitions<font size="2px"> (image credit: <a style="text-decoration:none" href="https://www.nvidia.com/en-gb/technologies/multi-instance-gpu/">NVIDIA</a>)</font>
 </p>
 
