@@ -19,8 +19,7 @@ Each MIG instance has dedicated compute resources, memory pathways, and isolated
 Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
 ![MIG Architecture (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.png)
-<p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
-</p>
+<p align=center>MIG Architecture</p>
 
 ---
 
@@ -32,8 +31,7 @@ The solution is as shown in the image below where the large model is give the ri
 The following figure illustrates how MIG technology partitions an A100 GPU into smaller, virtual GPUs. These "smaller GPUs" have reduced memory and fewer computing cores compared to the original GPU.
 
 ![Workloads on MIG Partitions (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-multiWorkLoad.png)
-<p align=center>Workloads on MIG Partitions<font size="2px"> (image credit: <a style="text-decoration:none" href="https://www.nvidia.com/en-gb/technologies/multi-instance-gpu/">NVIDIA</a>)</font>
-</p>
+<p align=center>Workloads on MIG Partitions</p>
 
 ---
 
