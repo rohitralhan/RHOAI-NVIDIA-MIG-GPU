@@ -18,7 +18,7 @@ Each MIG instance has dedicated compute resources, memory pathways, and isolated
 
 Note - MIG is primarily available on GPUs based on the **NVIDIA Ampere architecture** and newer. Like NVIDIA A30, A40, A100, NVIDIA H100 etc.
 
-![MIG Architecture (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.jpg)
+![MIG Architecture (image credit: NVIDIA)](https://raw.githubusercontent.com/rohitralhan/GPUSharingMIG/refs/heads/main/images/mig-overview.png)
 <p align=center>MIG Architecture (image credit: <a style="text-decoration:none" href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">Nvidia</a>)
 </p>
 
