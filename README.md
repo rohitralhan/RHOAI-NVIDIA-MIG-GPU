@@ -208,26 +208,23 @@ Follow the steps below to achieve this:
 	  --from-file=config.yaml=$CONFIG_FILE \
 	  -n nvidia-gpu-operator
     ```
-4.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`:
-	Update the cluster-policy name based on your environment.
+4.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`: (Update the cluster-policy name based on your environment)
 	```
 	oc patch clusterpolicies.nvidia.com/gpu-cluster-policy \
 	--type='json' \
 	-p='[{"op":"replace", "path":"/spec/mig/strategy", "value":"mixed"}]'
 	```
-5.	Patch the cluster policy so MIG Manager uses the custom config map:
-	Update the cluster-policy name and the custom config name based on your environment.
+6.	Patch the cluster policy so MIG Manager uses the custom config map: (Update the cluster-policy name and the custom config name based on your environment)
 	```
 	oc patch clusterpolicies.nvidia.com/gpu-cluster-policy \
 	--type='json' \
 	-p='[{"op":"replace", "path":"/spec/migManager/config/name", "value":"custom-mig-parted-config"}]'
 	```
-6.	Label the node(s) with the corresponding profile to configure:
-	Update the config name corresponding to your node(s) based on your environment.
+7.	Label the node(s) with the corresponding profile to configure: (Update the config name corresponding to your node(s) based on your environment)
  	```
-	oc label nodes <node-name> nvidia.com/mig.config=<<custom-config name>> --overwrite
+	oc label nodes <node-name> nvidia.com/mig.config=custom-mig-parted-config --overwrite
 	```
-7.	Optional: Monitor the MIG Manager logs to confirm the new MIG geometry is applied:
+8.	Optional: Monitor the MIG Manager logs to confirm the new MIG geometry is applied:
 	```
 	oc logs -n nvidia-gpu-operator -l app=nvidia-mig-manager -c nvidia-mig-manager
 	```
