@@ -130,11 +130,11 @@ nvidia.com/mig.strategy=single
 		nvidia.com/mig-1g.6gb: 		2
 		nvidia.com/mig-2g.12gb:  	1
 		Resource  				Requests  Limits
-		nvidia.com/mig-1g.6gb 		0 		0
-		nvidia.com/mig-2g.12gb  	0 		0
+		nvidia.com/mig-1g.6gb 			0 		0
+		nvidia.com/mig-2g.12gb  		0 		0
 	```
- 6. Go to the **Workloads --> Pods** click on **`nvidia-mig-manager-****`** pod(s) corresponding to each worker node where you have enabled MIG.
-    Go to **`Terminal Tab`** and run the **`nvidia-smi`** command. If everything is configured correctly you should see the MIG devices listed (based on the GPUs you have).
+ 6. Go to the **Workloads --> Pods** click on **`nvidia-mig-manager-****`** pod corresponding to the worker node where you have enabled MIG.
+    Go to **`Terminal`** Tab and run the **`nvidia-smi`** command. If everything is configured correctly you should see the MIG devices listed (based on the GPUs you have).
 
     Sample Output
 	```
@@ -175,79 +175,7 @@ nvidia.com/mig.strategy=single
 	|  No running processes found                                                             |
 	+-----------------------------------------------------------------------------------------+
 	```     
- 7. Alternatively(Optional): Start a pod to run the `nvidia-smi` command and display the GPU resources.
-	 1. Start a pod
-		```
-		cat <<EOF | oc apply -f -
-		apiVersion: v1
-		kind: Pod
-		metadata:
-		 name: nvidia-smi-pod
-		spec:
-		 restartPolicy: Never
-		 containers:
-		 - name: cuda-container
-		 image: nvcr.io/nvidia/cuda:12.1.0-base-ubi8
-		 command: ["/bin/sh","-c"]
-		 args: ["nvidia-smi"]
-		EOF
-		```
-		This pod will start and run the `nvidia-smi` command which will show us the MIG configuration with listed MIG devices.
-		
-	 2. List the pod
-		```
-		$ oc get pods
-		NAME                 READY   STATUS      RESTARTS   AGE
-		nvidia-smi-pod   0/1     Completed   0          3m34s
-		```
-	 3. Confirm that the `nvidia-smi` output lists the MIG devices (based on the GPUs you have):
-		 ```
-		 oc logs nvidia-smi-pod
-		 ```
-		 Sample Output
-	```
-	+-----------------------------------------------------------------------------------------+
-	| NVIDIA-SMI 550.90.07              Driver Version: 550.90.07      CUDA Version: 12.4     |
-	|-----------------------------------------+------------------------+----------------------+
-	| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-	| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-	|                                         |                        |               MIG M. |
-	|=========================================+========================+======================|
-	|   0  NVIDIA A30                     On  |   00000000:CA:00.0 Off |                   On |
-	| N/A   30C    P0             37W /  165W |      51MiB /  24576MiB |     N/A      Default |
-	|                                         |                        |              Enabled |
-	+-----------------------------------------+------------------------+----------------------+
 
-	+-----------------------------------------------------------------------------------------+
-	| MIG devices:                                                                            |
-	+------------------+----------------------------------+-----------+-----------------------+
-	| GPU  GI  CI  MIG |                     Memory-Usage |        Vol|      Shared           |
-	|      ID  ID  Dev |                       BAR1-Usage | SM     Unc| CE ENC DEC OFA JPG    |
-	|                  |                                  |        ECC|                       |
-	|==================+==================================+===========+=======================|
-	|  0    1   0   0  |              26MiB / 11968MiB    | 28      0 |  2   0    2    0    0 |
-	|                  |                 0MiB / 16383MiB  |           |                       |
-	+------------------+----------------------------------+-----------+-----------------------+
-	|  0    5   0   1  |              13MiB /  5952MiB    | 14      0 |  1   0    1    0    0 |
-	|                  |                 0MiB /  8191MiB  |           |                       |
-	+------------------+----------------------------------+-----------+-----------------------+
-	|  0    6   0   2  |              13MiB /  5952MiB    | 14      0 |  1   0    1    0    0 |
-	|                  |                 0MiB /  8191MiB  |           |                       |
-	+------------------+----------------------------------+-----------+-----------------------+
-	                                                                                       
-	+-----------------------------------------------------------------------------------------+
-	| Processes:                                                                              |
-	|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
-	|        ID   ID                                                               Usage      |
-	|=========================================================================================|
-	|  No running processes found                                                             |
-	+-----------------------------------------------------------------------------------------+
-	```
-	 4. Delete the sample pod created above:
-		 ```
-		 $ oc delete pod command-nvidia-smi
-		pod "command-nvidia-smi" deleted
-		 ```	
 ---
 
 ## Configure Custom MIG Profiles
@@ -255,38 +183,51 @@ By default, the NVIDIA GPU Operator in OpenShift creates a `default-mig-parted-c
 
 This behavior enables consistent and declarative management of GPU partitioning across nodes and simplifies the automated deployment of standard MIG configurations in OpenShift environments.
 
-Assume each worker node in an OpenShift cluster has 4 A100 GPUs. Depending on your use case, you want to enable MIG on only 2 of the GPUs, leaving the remaining GPUs unpartitioned. To achieve this, you can define a custom MIG profile that specifies which GPUs should be configured with MIG and which should remain in full GPU mode.
+Assume each worker node in an OpenShift cluster has 4 A30 GPUs. Depending on your use case, you want to enable MIG on only 2 of the GPUs, leaving the remaining GPUs unpartitioned. To achieve this, you can define a custom MIG profile that specifies which GPUs should be configured with MIG and which should remain in full GPU mode.
+
+Procedure:
+1. Make a copy of the default `default-mig-parted-config` config map in the `nvidia-gpu-operator namespace`
+2. Add the custom configs to the end of the `default-mig-parted-config` config map. Feel free to remove unwanted entries
+3. Create the new config map `custom--mig-parted-config` with the custom config entries
+4. Patch the gpu cluster policy to use the `custom-mig-parted-config` config map
+5. Label the node(s) with the appropriate cluster policy
+
 
 Follow the steps below to achieve this:
 
- 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml`. Use the [configmap](https://gitlab.com/nvidia/kubernetes/gpu-operator/-/blob/v1.8.0/assets/state-mig-manager/0400_configmap.yaml) as guidance to help you build that custom configuration. For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted).
+ 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) as guidance to help you build that custom configuration. For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted).
 
 	For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
 
- 2. Create the custom configuration within the  `nvidia-gpu-operator`  namespace:
+ 2. Add the custom config entries (`custom-config-n1 & custom-config-n2`) to the bottom of the `custom_config.yaml` config map as shown in the config map [custom_config.yaml](https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/edit/main/custom_config.yaml).
+ 
+ 3. Create the custom configuration within the  `nvidia-gpu-operator`  namespace:
 	  ```
-	  $ CONFIG_FILE=/path/to/custom_configmap.yaml && \   
-	  oc create configmap custom-mig-parted-config \   
-	  --from-file=config.yaml=$CONFIG_FILE \   
+	  $ CONFIG_FILE=/path/to/custom_configmap.yaml && \
+	  oc create configmap custom-mig-parted-config \
+	  --from-file=config.yaml=$CONFIG_FILE \
 	  -n nvidia-gpu-operator
     ```
-3.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`:
+4.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`:
+	Update the cluster-policy name based on your environment.
 	```
-	oc patch clusterpolicies.nvidia.com/cluster-policy \
+	oc patch clusterpolicies.nvidia.com/gpu-cluster-policy \
 	--type='json' \
 	-p='[{"op":"replace", "path":"/spec/mig/strategy", "value":"mixed"}]'
 	```
-4.	Patch the cluster policy so MIG Manager uses the custom config map:
+5.	Patch the cluster policy so MIG Manager uses the custom config map:
+	Update the cluster-policy name and the custom config name based on your environment.
 	```
-	oc patch clusterpolicies.nvidia.com/cluster-policy \
+	oc patch clusterpolicies.nvidia.com/gpu-cluster-policy \
 	--type='json' \
-	-p='[{"op":"replace", "path":"/spec/migManager/config/name", "value":"custom-mig-config"}]'
+	-p='[{"op":"replace", "path":"/spec/migManager/config/name", "value":"custom-mig-parted-config"}]'
 	```
-5.	Label the nodes with the profile to configure:
+6.	Label the node(s) with the corresponding profile to configure:
+	Update the config name corresponding to your node(s) based on your environment.
+ 	```
+	oc label nodes <node-name> nvidia.com/mig.config=<<custom-config name>> --overwrite
 	```
-	kubectl label nodes <node-name> nvidia.com/mig.config=custom-config --overwrite
-	```
-6.	Optional: Monitor the MIG Manager logs to confirm the new MIG geometry is applied:
+7.	Optional: Monitor the MIG Manager logs to confirm the new MIG geometry is applied:
 	```
 	oc logs -n nvidia-gpu-operator -l app=nvidia-mig-manager -c nvidia-mig-manager
 	```
@@ -306,66 +247,58 @@ Follow the steps below to achieve this:
 	MIG configuration applied successfully
 	```
 
-Here’s an example snippet from a `custom-config.yaml` file. In this setup, the node has 8 A100 GPUs. As you can see under the `custom-config` section, GPUs 0–3 are left unpartitioned, while GPUs 4–7 are configured with MIG and assigned various instance profiles. This allows you to run mixed workloads efficiently on the same node—maximizing GPU utilization without overcommitting resources.
+
+Quick explanation of the custom configs defined in the config map file [custom-config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml).
+ - custom-config-n1: Assuming there is a single A30 GPU, this profile enables MIG and applies the MIG configuration specified under the `mig-devices` section to the first/only GPU (`device: [0]`) on the node   
+ - custom-config-n2: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
+ - custom-config-n3: Assuming there are 8 A100 GPUs, this profile disables MIG on the GPUs  to 4 (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
+   
+ This allows you to run mixed workloads efficiently on the same node—maximizing GPU utilization without overcommitting resources.
 ```
-version: v1
-mig-configs:
-  all-disabled:
-    - devices: all
-      mig-enabled: false
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: custom-mig-parted-config
+  namespace: nvidia-gpu-operator
+data:
+  config.yaml: |
+      .
+      .
+      .
+      .
+      .
+      custom-config-n1:
+        - devices: [0]
+          mig-enabled: true
+          mig-devices:
+            "1g.6gb": 2
+            "2g.12gb": 1
 
-  all-enabled:
-    - devices: all
-      mig-enabled: true
-      mig-devices: {}
+      custom-config-n2:
+        - devices: [0]
+          mig-enabled: false
 
-  all-1g.5gb:
-    - devices: all
-      mig-enabled: true
-      mig-devices:
-        "1g.5gb": 7
-
-  all-2g.10gb:
-    - devices: all
-      mig-enabled: true
-      mig-devices:
-        "2g.10gb": 3
-
-  all-3g.20gb:
-    - devices: all
-      mig-enabled: true
-      mig-devices:
-        "3g.20gb": 2
-
-  all-balanced:
-    - devices: all
-      mig-enabled: true
-      mig-devices:
-        "1g.5gb": 2
-        "2g.10gb": 1
-        "3g.20gb": 1
-
-  custom-config:
-    - devices: [0,1,2,3]
-      mig-enabled: false
-    - devices: [4]
-      mig-enabled: true
-      mig-devices:
-        "1g.5gb": 7
-    - devices: [5]
-      mig-enabled: true
-      mig-devices:
-        "2g.10gb": 3
-    - devices: [6]
-      mig-enabled: true
-      mig-devices:
-        "3g.20gb": 2
-    - devices: [7]
-      mig-enabled: true
-      mig-devices:
-        "1g.5gb": 2
-        "2g.10gb": 1
-        "3g.20gb": 1
+      custom-config-n3:
+        - devices: [0,1,2,3]
+          mig-enabled: false
+        - devices: [4]
+          mig-enabled: true
+          mig-devices:
+            "1g.5gb": 7
+        - devices: [5]
+          mig-enabled: true
+          mig-devices:
+            "2g.10gb": 3
+        - devices: [6]
+          mig-enabled: true
+          mig-devices:
+            "3g.20gb": 2
+        - devices: [7]
+          mig-enabled: true
+          mig-devices:
+            "1g.5gb": 2
+            "2g.10gb": 1
+            "3g.20gb": 1
 ```
 ## Disable the MIG on Red Hat OpenShift
 
