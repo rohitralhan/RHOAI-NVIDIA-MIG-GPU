@@ -310,7 +310,7 @@ data:
         - devices: [0]
           mig-enabled: false
 
-      custom-confign3:
+      custom-config-n3:
         - devices: [0,1,2,3]
           mig-enabled: false
         - devices: [4]
