@@ -98,12 +98,13 @@ nvidia.com/mig.strategy=single
 	```
 	oc patch clusterpolicy/gpu-cluster-policy --type='json' \
 	 -p='[{"op": "replace", "path": "/spec/mig/strategy", "value": '$STRATEGY'}]'
-	``` 
+	```
+    This will require some of the pods in the nvidia-gpu-operator namespace to be restarted, ensure all the pods are up and running in this namespace.
  3. Next, label the node with the configuration label
 	```
 	oc label node $NODE_NAME nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
 	```
-
+	Label each node that has a GPU where you want to enable MIG.
 	The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
 
  4. Verify that MIG manager configured the GPUs:
@@ -132,7 +133,49 @@ nvidia.com/mig.strategy=single
 		nvidia.com/mig-1g.6gb 		0 		0
 		nvidia.com/mig-2g.12gb  	0 		0
 	```
- 6. Alternatively(Optional): Start a pod to run the `nvidia-smi` command and display the GPU resources.
+ 6. Go to the **Workloads --> Pods** click on **`nvidia-mig-manager-****`** pod(s) corresponding to each worker node where you have enabled MIG.
+    Go to **`Terminal Tab`** and run the **`nvidia-smi`** command. If everything is configured correctly you should see the MIG devices listed (based on the GPUs you have).
+
+    Sample Output
+	```
+	+-----------------------------------------------------------------------------------------+
+	| NVIDIA-SMI 550.90.07              Driver Version: 550.90.07      CUDA Version: 12.4     |
+	|-----------------------------------------+------------------------+----------------------+
+	| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+	| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+	|                                         |                        |               MIG M. |
+	|=========================================+========================+======================|
+	|   0  NVIDIA A30                     On  |   00000000:CA:00.0 Off |                   On |
+	| N/A   30C    P0             37W /  165W |      51MiB /  24576MiB |     N/A      Default |
+	|                                         |                        |              Enabled |
+	+-----------------------------------------+------------------------+----------------------+
+
+	+-----------------------------------------------------------------------------------------+
+	| MIG devices:                                                                            |
+	+------------------+----------------------------------+-----------+-----------------------+
+	| GPU  GI  CI  MIG |                     Memory-Usage |        Vol|      Shared           |
+	|      ID  ID  Dev |                       BAR1-Usage | SM     Unc| CE ENC DEC OFA JPG    |
+	|                  |                                  |        ECC|                       |
+	|==================+==================================+===========+=======================|
+	|  0    1   0   0  |              26MiB / 11968MiB    | 28      0 |  2   0    2    0    0 |
+	|                  |                 0MiB / 16383MiB  |           |                       |
+	+------------------+----------------------------------+-----------+-----------------------+
+	|  0    5   0   1  |              13MiB /  5952MiB    | 14      0 |  1   0    1    0    0 |
+	|                  |                 0MiB /  8191MiB  |           |                       |
+	+------------------+----------------------------------+-----------+-----------------------+
+	|  0    6   0   2  |              13MiB /  5952MiB    | 14      0 |  1   0    1    0    0 |
+	|                  |                 0MiB /  8191MiB  |           |                       |
+	+------------------+----------------------------------+-----------+-----------------------+
+	                                                                                       
+	+-----------------------------------------------------------------------------------------+
+	| Processes:                                                                              |
+	|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+	|        ID   ID                                                               Usage      |
+	|=========================================================================================|
+	|  No running processes found                                                             |
+	+-----------------------------------------------------------------------------------------+
+	```     
+ 7. Alternatively(Optional): Start a pod to run the `nvidia-smi` command and display the GPU resources.
 	 1. Start a pod
 		```
 		cat <<EOF | oc apply -f -
@@ -149,7 +192,7 @@ nvidia.com/mig.strategy=single
 		 args: ["nvidia-smi"]
 		EOF
 		```
-		This pod will start and run the `nvidia-smi` command which will show us the MIG configuration with 3 MIG devices.
+		This pod will start and run the `nvidia-smi` command which will show us the MIG configuration with listed MIG devices.
 		
 	 2. List the pod
 		```
@@ -157,7 +200,7 @@ nvidia.com/mig.strategy=single
 		NAME                 READY   STATUS      RESTARTS   AGE
 		nvidia-smi-pod   0/1     Completed   0          3m34s
 		```
-	 3. Confirm that the `nvidia-smi` output includes 3 MIG devices:
+	 3. Confirm that the `nvidia-smi` output lists the MIG devices (based on the GPUs you have):
 		 ```
 		 oc logs nvidia-smi-pod
 		 ```
