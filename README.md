@@ -198,7 +198,7 @@ This behavior enables consistent and declarative management of GPU partitioning 
 
     For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted). For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
 
- 4. Add the custom config entries (`custom-config-n1 & custom-config-n2`) to the bottom of your `custom_config.yaml` config map. Refer to the config map [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml). The entries mentioned below are for NVIDIA A30 GPUs one on each worker node. Update the custom-configs depending on the GPUs in your environment, refer to the NVIDIA [documentation](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles) for the supported MIG profiles.
+ 4. Append the custom config entries (`custom-config-n1 & custom-config-n2`) to your `custom_config.yaml` config map file. Refer to the config map [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml). The entries mentioned below are for NVIDIA A30 GPUs one on each worker node. Update the custom-configs depending on the GPUs in your environment, refer to the NVIDIA [documentation](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles) for the supported MIG profiles.
 
 ```
       custom-config-n1:
