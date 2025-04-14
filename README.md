@@ -183,7 +183,7 @@ By default, the NVIDIA GPU Operator in OpenShift creates a `default-mig-parted-c
 
 This behavior enables consistent and declarative management of GPU partitioning across nodes and simplifies the automated deployment of standard MIG configurations in OpenShift environments.
 
-High level Procedure:
+### High level Procedure
 1. Create a new config map `custom--mig-parted-config` by copying the contents of the `default-mig-parted-config` config map from the `nvidia-gpu-operator` namespace
 2. Add the custom config entries to the `custom-mig-parted-config` config map. Remove any/all unwanted entries based on your requirements GPUs etc.
 3. Set the MIG strategy to `mixed` if not already set.
@@ -191,7 +191,7 @@ High level Procedure:
 5. Label the node(s) with the appropriate cluster policy
 
 
-Follow the steps below to achieve this:
+### Detailed Steps
 
  1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer to the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) as guidance to help you build that custom configuration.
     Remove any/all unwanted entries based on your requirements GPUs etc.
@@ -257,7 +257,7 @@ Follow the steps below to achieve this:
 	```
 
 
-Quick explanation of the custom configs defined in the config map file [custom-config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml).
+### Quick explanation of the custom configs in the config map file [custom-config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml).
  - **custom-config-n1**: Assuming there is a single A30 GPU, this profile enables MIG and applies the MIG configuration specified under the `mig-devices` section to the first/only GPU (`device: [0]`) on the node   
  - **custom-config-n2**: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
  - **custom-config-n3**: Assuming there are 8 A100 GPUs, this profile disables MIG on the first 4 GPUs (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
