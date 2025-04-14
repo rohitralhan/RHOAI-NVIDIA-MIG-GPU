@@ -193,7 +193,7 @@ This behavior enables consistent and declarative management of GPU partitioning 
 
 ### Detailed Steps
 
- 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer to the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) as guidance to help you build that custom configuration.
+ 1. Start by preparing a custom config map resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer to the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) it has 3 custom configurations for reference only and could vary based on your requirements and the GPUs in your environment.
     Remove any/all unwanted entries based on your requirements GPUs etc.
 
     For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted). For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
