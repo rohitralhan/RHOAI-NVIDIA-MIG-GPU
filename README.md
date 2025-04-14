@@ -262,7 +262,7 @@ This behavior enables consistent and declarative management of GPU partitioning 
  - **custom-config-n2**: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
  - **custom-config-n3**: Assuming there are 8 A100 GPUs, this profile disables MIG on the first 4 GPUs (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
    
- This allows you to run mixed workloads efficiently on the same node—maximizing GPU utilization without overcommitting resources.
+ This allows you to run mixed workloads efficiently and maximizing GPU utilization without overcommitting resources.
 ```
 kind: ConfigMap
 apiVersion: v1
