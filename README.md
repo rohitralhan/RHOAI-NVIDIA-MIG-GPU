@@ -185,30 +185,44 @@ This behavior enables consistent and declarative management of GPU partitioning 
 
 Assume each worker node in an OpenShift cluster has 4 A30 GPUs. Depending on your use case, you want to enable MIG on only 2 of the GPUs, leaving the remaining GPUs unpartitioned. To achieve this, you can define a custom MIG profile that specifies which GPUs should be configured with MIG and which should remain in full GPU mode.
 
-Procedure:
-1. Make a copy of the default `default-mig-parted-config` config map in the `nvidia-gpu-operator namespace`
-2. Add the custom configs to the end of the `default-mig-parted-config` config map. Feel free to remove unwanted entries
-3. Create the new config map `custom--mig-parted-config` with the custom config entries
+High level Procedure:
+1. Create a new config map `custom--mig-parted-config` by copying the contents of the `default-mig-parted-config` config map from the `nvidia-gpu-operator` namespace
+2. Add the custom config entries to the `custom-mig-parted-config` config map. Remove any/all unwanted entries based on your requirements GPUs etc.
+3. Set the MIG strategy to `mixed` if not already set.
 4. Patch the gpu cluster policy to use the `custom-mig-parted-config` config map
 5. Label the node(s) with the appropriate cluster policy
 
 
 Follow the steps below to achieve this:
 
- 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) as guidance to help you build that custom configuration. For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted).
+ 1. Start by preparing a custom `configmap` resource file for example `custom_configmap.yaml` by copying the contents of the `default-mig-parted-config` config map. Refer to the [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml) as guidance to help you build that custom configuration.
+    Remove any/all unwanted entries based on your requirements GPUs etc.
 
-	For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
+    For more documentation about the file format see [mig-parted](https://github.com/NVIDIA/mig-parted). For a list of all supported combinations and placements of profiles on A100 and A30, refer to the section on [supported profiles](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles).
 
- 2. Add the custom config entries (`custom-config-n1 & custom-config-n2`) to the bottom of the `custom_config.yaml` config map as shown in the config map [custom_config.yaml](https://github.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/edit/main/custom_config.yaml).
+ 4. Add the custom config entries (`custom-config-n1 & custom-config-n2`) to the bottom of your `custom_config.yaml` config map. Refer to the config map [custom_config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml). The entries mentioned below are for NVIDIA A30 GPUs one on each worker node. Update the custom-configs depending on the GPUs in your environment, refer to the NVIDIA [documentation](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-profiles) for the supported MIG profiles.
+
+```
+      custom-config-n1:
+        - devices: [0]
+          mig-enabled: true
+          mig-devices:
+            "1g.6gb": 2
+            "2g.12gb": 1
+
+      custom-config-n2:
+        - devices: [0]
+          mig-enabled: false
+```
  
- 3. Create the custom configuration within the  `nvidia-gpu-operator`  namespace:
+ 4. Create the custom config map within the  `nvidia-gpu-operator`  namespace:
 	  ```
 	  $ CONFIG_FILE=/path/to/custom_configmap.yaml && \
 	  oc create configmap custom-mig-parted-config \
 	  --from-file=config.yaml=$CONFIG_FILE \
 	  -n nvidia-gpu-operator
     ```
-4.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed`: (Update the cluster-policy name based on your environment)
+5.	If the custom configuration specifies more than one instance profile, set the strategy to `mixed` if not already set: (Update the cluster-policy name based on your environment)
 	```
 	oc patch clusterpolicies.nvidia.com/gpu-cluster-policy \
 	--type='json' \
@@ -246,9 +260,9 @@ Follow the steps below to achieve this:
 
 
 Quick explanation of the custom configs defined in the config map file [custom-config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml).
- - custom-config-n1: Assuming there is a single A30 GPU, this profile enables MIG and applies the MIG configuration specified under the `mig-devices` section to the first/only GPU (`device: [0]`) on the node   
- - custom-config-n2: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
- - custom-config-n3: Assuming there are 8 A100 GPUs, this profile disables MIG on the GPUs  to 4 (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
+ - **custom-config-n1**: Assuming there is a single A30 GPU, this profile enables MIG and applies the MIG configuration specified under the `mig-devices` section to the first/only GPU (`device: [0]`) on the node   
+ - **custom-config-n2**: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
+ - **custom-config-n3**: Assuming there are 8 A100 GPUs, this profile disables MIG on the first 4 GPUs (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
    
  This allows you to run mixed workloads efficiently on the same node—maximizing GPU utilization without overcommitting resources.
 ```
