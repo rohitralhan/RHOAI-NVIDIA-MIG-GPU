@@ -232,7 +232,7 @@ This behavior enables consistent and declarative management of GPU partitioning 
 	--type='json' \
 	-p='[{"op":"replace", "path":"/spec/migManager/config/name", "value":"custom-mig-parted-config"}]'
 	```
-7.	Label the node(s) with the corresponding profile to configure: (Update the config name corresponding to your node(s) based on your environment)
+7.	Label each node with the corresponding mig profile that you want to use: (Update the config name corresponding to your node(s) based on your environment)
  	```
 	oc label nodes <node-name> nvidia.com/mig.config=custom-mig-parted-config --overwrite
 	```
