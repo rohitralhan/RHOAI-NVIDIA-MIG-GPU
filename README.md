@@ -184,7 +184,7 @@ By default, the NVIDIA GPU Operator in OpenShift creates a `default-mig-parted-c
 This behavior enables consistent and declarative management of GPU partitioning across nodes and simplifies the automated deployment of standard MIG configurations in OpenShift environments.
 
 ### High level Procedure
-1. Create a new config map `custom--mig-parted-config` by copying the contents of the `default-mig-parted-config` config map from the `nvidia-gpu-operator` namespace
+1. Create a new config map `custom-mig-parted-config` by copying the contents of the `default-mig-parted-config` config map from the `nvidia-gpu-operator` namespace
 2. Add the custom config entries to the `custom-mig-parted-config` config map. Remove any/all unwanted entries based on your requirements GPUs etc.
 3. Set the MIG strategy to `mixed` if not already set.
 4. Patch the gpu cluster policy to use the `custom-mig-parted-config` config map
