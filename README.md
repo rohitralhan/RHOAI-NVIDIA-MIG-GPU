@@ -102,9 +102,9 @@ nvidia.com/mig.strategy=single
     This will require some of the pods in the nvidia-gpu-operator namespace to be restarted, ensure all the pods are up and running in this namespace.
  3. Next, label the node with the configuration label
 	```
-	oc label node $NODE_NAME nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
+	oc label node $NODE_NAME1 nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
 	```
-	Label each node that has a GPU where you want to enable MIG.
+	**Label each node that has a GPU where you want to enable MIG.**
 	The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
 
  4. Verify that MIG manager configured the GPUs:
