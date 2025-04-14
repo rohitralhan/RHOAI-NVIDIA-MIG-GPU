@@ -257,7 +257,7 @@ This behavior enables consistent and declarative management of GPU partitioning 
 	```
 
 
-### Quick explanation of the custom configs in the config map file [custom-config.yaml](https://raw.githubusercontent.com/rohitralhan/RHOAI-NVIDIA-MIG-GPU/refs/heads/main/custom_config.yaml).
+### Quick explanation of the custom configs samples
  - **custom-config-n1**: Assuming there is a single A30 GPU, this profile enables MIG and applies the MIG configuration specified under the `mig-devices` section to the first/only GPU (`device: [0]`) on the node   
  - **custom-config-n2**: Assuming there is a single A30 GPU, this profile disables MIG to the first/only GPU (`device: [0]`) on the node
  - **custom-config-n3**: Assuming there are 8 A100 GPUs, this profile disables MIG on the first 4 GPUs (`devices: [0,1,2,3]`) and enables MIG on the rest 4 GPUs with the mentioned MIG profiles under the `mig-devices` section.
