@@ -311,10 +311,10 @@ data:
 ```
 ## Disable the MIG on Red Hat OpenShift
 
- To utilize the full capacity of the GPU you can always disable/turn off MIG by executing the following command
+ To utilize the full capacity of the GPU you can always disable/turn off MIG by executing the following command (on each node with GPUs as applicable)
  ```
 MIG_CONFIGURATION=all-disabled && \
-  oc label node/$NODE_NAME nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
+  oc label node/$NODE_NAME1 nvidia.com/mig.config=$MIG_CONFIGURATION --overwrite
  ```
  The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
 
