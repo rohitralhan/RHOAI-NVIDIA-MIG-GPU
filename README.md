@@ -319,7 +319,7 @@ MIG_CONFIGURATION=all-disabled && \
  The MIG manager assigns a `mig.config.state` label to the GPU, then terminates all GPU pods to enable MIG mode and configure the GPU according to the specified settings.
 
 ## Conclusion
-NVIDIA Multi-Instance GPU (MIG) technology enables efficient GPU resource utilization by partitioning a single GPU into multiple independent instances. This ensures optimal performance for diverse workloads, from AI/ML training to inference and data analytics. By leveraging MIG on platforms like Red Hat OpenShift AI, organizations can maximize GPU efficiency, enhance multi-tenancy, and reduce infrastructure costs. Implementing MIG provides a scalable and flexible approach to GPU acceleration, making it a crucial tool for modern AI and high-performance computing environments.
+NVIDIA Multi-Instance GPU (MIG) technology enables efficient GPU resource utilization by partitioning a single GPU into multiple independent instances. This ensures optimal performance for diverse workloads, from AI/ML training to inference and data analytics. By leveraging MIG on platforms like Red Hat OpenShift AI, organizations can maximize GPU efficiency, enhance multi-tenancy, and reduce infrastructure costs. Implementing MIG provides a scalable and flexible approach to GPU acceleration, making it a crucial tool for modern AI and high-performance computing environments. Nets we will look at How to use [MIG with Red Hat OpenShift AI](https://github.com/rohitralhan/MIG-with-RHOAI/blob/main/README.md).
 
 ## References
  [MIG on Red Hat OpenShift Container Platform](https://docs.nvidia.com/datacenter/cloud-native/openshift/latest/mig-ocp.html?target=_blank)
